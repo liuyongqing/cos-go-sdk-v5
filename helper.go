@@ -67,6 +67,7 @@ func cloneRequest(r *http.Request) *http.Request {
 //
 // http://www.ecma-international.org/ecma-262/6.0/#sec-uri-syntax-and-semantics
 func encodeURIComponent(s string, excluded ...[]byte) string {
+	return s
 	var b bytes.Buffer
 	written := 0
 
