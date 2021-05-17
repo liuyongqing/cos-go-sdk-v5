@@ -139,8 +139,8 @@ func (c *Client) newRequest(ctx context.Context, baseURL *url.URL, uri, method s
 		return
 	}
 	u, _ := url.Parse(uri)
-	urlStr := baseURL.ResolveReference(u).String()
-
+	//urlStr := baseURL.ResolveReference(u).String()
+	urlStr := fmt.Sprintf("%s%s", baseURL.String(), u)
 	var reader io.Reader
 	contentType := ""
 	contentMD5 := ""
