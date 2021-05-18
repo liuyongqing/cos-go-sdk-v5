@@ -24,6 +24,18 @@ type BucketGetResult struct {
 	EncodingType   string   `xml:"Encoding-Type,omitempty"`
 }
 
+type BucketGetV2Result struct {
+        XMLName        xml.Name `xml:"ListBucketResult"`
+        Name           string
+        Prefix         string `xml:"Prefix,omitempty"`
+        ContinuationToken         string `xml:"ContinuationToken,omitempty"`
+        NextContinuationToken     string `xml:"NextContinuationToken,omitempty"`
+        KeyCount    int
+        MaxKeys        int
+        IsTruncated    bool
+        Contents       []Object `xml:"Contents,omitempty"`
+}
+
 // BucketGetOptions is the option of GetBucket
 type BucketGetOptions struct {
 	Prefix       string `url:"prefix,omitempty"`
@@ -33,6 +45,12 @@ type BucketGetOptions struct {
 	MaxKeys      int    `url:"max-keys,omitempty"`
 }
 
+type BucketGetV2Options struct {
+        Prefix       string `url:"prefix,omitempty"`
+        Marker       string `url:"marker,omitempty"`
+        MaxKeys      int    `url:"max-keys,omitempty"`
+        ContinuationToken         string `url:"continuation-token,omitempty"`
+}
 // Get Bucket请求等同于 List Object请求，可以列出该Bucket下部分或者所有Object，发起该请求需要拥有Read权限。
 //
 // https://www.qcloud.com/document/product/436/7734
@@ -47,6 +65,22 @@ func (s *BucketService) Get(ctx context.Context, opt *BucketGetOptions) (*Bucket
 	}
 	resp, err := s.client.send(ctx, &sendOpt)
 	return &res, resp, err
+}
+
+// Get Bucket请求等同于 List Object请求，可以列出该Bucket下部分或者所有Object，发起该请求需要拥有Read权限。
+//
+// https://www.qcloud.com/document/product/436/7734
+func (s *BucketService) GetV2(ctx context.Context, opt *BucketGetV2Options) (*BucketGetV2Result, *Response, error) {
+        var res BucketGetV2Result
+        sendOpt := sendOptions{
+                baseURL:  s.client.BaseURL.BucketURL,
+                uri:      "/",
+                method:   http.MethodGet,
+                optQuery: opt,
+                result:   &res,
+        }
+        resp, err := s.client.send(ctx, &sendOpt)
+        return &res, resp, err
 }
 
 // BucketPutOptions is same to the ACLHeaderOptions
